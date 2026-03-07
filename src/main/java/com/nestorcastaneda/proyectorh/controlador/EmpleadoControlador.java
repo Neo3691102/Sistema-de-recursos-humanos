@@ -2,10 +2,12 @@ package com.nestorcastaneda.proyectorh.controlador;
 
 
 import com.nestorcastaneda.proyectorh.entidad.Empleado;
+import com.nestorcastaneda.proyectorh.excepcion.RecursoNoEncontradoExcepcion;
 import com.nestorcastaneda.proyectorh.servicio.EmpleadoServicio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +27,15 @@ public class EmpleadoControlador {
         List<Empleado> empleados = empleadoServicio.listarEmpleados();
         empleados.forEach((empleado) -> logger.info(empleado.toString()));
         return empleados;
+    }
+
+    @GetMapping("/empleados/{id}")
+    public ResponseEntity<Empleado> obtenerEmpleadoxId(@PathVariable Integer id){
+        Empleado empleado = empleadoServicio.buscarEmpleadoporId(id);
+        if(empleado == null){
+            throw new RecursoNoEncontradoExcepcion("No se encontro el empleado con el id: " + id);
+        }
+        return ResponseEntity.ok(empleado);
     }
 
     @PostMapping("/empleados")
