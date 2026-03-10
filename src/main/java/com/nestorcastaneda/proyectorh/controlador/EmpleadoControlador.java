@@ -44,4 +44,17 @@ public class EmpleadoControlador {
         return empleadoServicio.guardarEmpleado(empleado);
     }
 
+    @PutMapping("/empleados/{id}")
+    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable Integer id, @RequestBody Empleado empleadorecibido){
+        Empleado empleado = empleadoServicio.buscarEmpleadoporId(id);
+        if(empleado == null){
+            throw new RecursoNoEncontradoExcepcion("El id recibido no existe " + id);
+        }
+        empleado.setNombre(empleadorecibido.getNombre());
+        empleado.setDepartamento(empleadorecibido.getDepartamento());
+        empleado.setSueldo(empleadorecibido.getSueldo());
+        empleadoServicio.guardarEmpleado(empleado);
+        return ResponseEntity.ok(empleado);
+    }
+
 }
