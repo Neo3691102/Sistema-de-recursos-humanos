@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("rh-app") //sirve para modificar la url, quedaría http://localhost8080/rh-app
@@ -55,6 +57,19 @@ public class EmpleadoControlador {
         empleado.setSueldo(empleadorecibido.getSueldo());
         empleadoServicio.guardarEmpleado(empleado);
         return ResponseEntity.ok(empleado);
+    }
+
+    @DeleteMapping("empleados/{id}")
+    public ResponseEntity<Map<String, Boolean>> eliminarempleado(@PathVariable Integer id){
+        Empleado empleadoEliminar = empleadoServicio.buscarEmpleadoporId(id);
+        if(empleadoEliminar == null){
+            throw new RecursoNoEncontradoExcepcion("El empleado con el id " +  id+ " No existe");
+        }
+        empleadoServicio.eliminarEmpleado(empleadoEliminar);
+        //JSON
+        Map<String, Boolean> respuesta = new HashMap<>();
+        respuesta.put("eliminado", Boolean.TRUE);
+        return ResponseEntity.ok(respuesta);
     }
 
 }
